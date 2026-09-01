@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f3d5e">
+<title>My Money Manager</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--text:#17202a;--muted:#6b7280;--line:#dbe3ea;--primary:#0f3d5e;--good:#16794b;--bad:#b42318;--warn:#a15c00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 12px 92px}.top{position:sticky;top:0;background:rgba(244,247,250,.97);z-index:10;padding:8px 0}
+.brand{display:flex;justify-content:space-between;gap:10px;align-items:center}.brand h1{margin:0;font-size:20px}.sub,.note{font-size:12px;color:var(--muted)}
+.card,.stat{background:#fff;border:1px solid var(--line);border-radius:14px}.card{padding:14px;margin-top:12px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.stat{padding:12px;min-width:0}.label{font-size:12px;color:var(--muted)}.value{font-size:19px;font-weight:800;margin-top:4px}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tabs{display:flex;gap:6px;overflow:auto;padding:8px 0}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:700}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.input{width:100%;min-height:46px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{min-height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 12px;font-weight:700}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.danger{color:var(--bad)}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:11px;margin-top:10px}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;color:var(--muted);background:#f8fafc}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:12px;font-weight:700}.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:22px}.section{font-size:16px;font-weight:800;margin-bottom:10px}.notice{padding:11px;border:1px solid var(--line);background:#f8fafc;border-radius:10px;font-size:13px;line-height:1.45}
+.lock{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:18px;z-index:99}.lockbox{width:min(390px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:20;padding-bottom:max(5px,env(safe-area-inset-bottom))}.bottomin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px}.nav{border:0;background:transparent;padding:9px 3px;border-radius:9px;font-size:11px;font-weight:700;color:var(--muted)}.nav.active{background:#e8f0f5;color:var(--primary)}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.brand h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div id="lock" class="lock hidden"><div class="lockbox"><h2 style="margin:0">My Money Manager</h2><div class="note">Enter your PIN</div><div class="field" style="margin-top:12px"><label>PIN</label><input id="unlockPin" class="input" type="password" inputmode="numeric" maxlength="8"></div><div class="actions"><button id="unlock" class="btn primary">Unlock</button></div><div id="unlockMsg" class="note"></div></div></div>
+
+<main class="app">
+<div class="top">
+<div class="brand"><div><h1>My Money Manager</h1><div class="sub">Income • Expenses • Debtors • Creditors • LKR • v2.2</div></div><button id="install" class="btn hidden">Install App</button></div>
+<div class="tabs"><button class="tab active" data-page="dashboard">Dashboard</button><button class="tab" data-page="cash">Income & Expenses</button><button class="tab" data-page="ledger">Debtors & Creditors</button><button class="tab" data-page="settings">Settings</button></div>
+</div>
+
+<section id="dashboard" class="page">
+<div class="stats">
+<div class="stat"><div class="label">Cash Income</div><div id="income" class="value good">LKR 0.00</div></div>
+<div class="stat"><div class="label">Cash Expenses</div><div id="expense" class="value bad">LKR 0.00</div></div>
+<div class="stat"><div class="label">Current Balance</div><div id="balance" class="value">LKR 0.00</div></div>
+<div class="stat"><div class="label">This Month Net</div><div id="monthNet" class="value">LKR 0.00</div></div>
+</div>
+<div class="stats">
+<div class="stat"><div class="label">Debtors Owe Me</div><div id="recv" class="value good">LKR 0.00</div></div>
+<div class="stat"><div class="label">I Owe Creditors</div><div id="payable" class="value bad">LKR 0.00</div></div>
+<div class="stat"><div class="label">Overdue to Receive</div><div id="overRecv" class="value warn">LKR 0.00</div></div>
+<div class="stat"><div class="label">Overdue to Pay</div><div id="overPay" class="value warn">LKR 0.00</div></div>
+</div>
+<div class="card"><div class="section">Upcoming / Overdue</div><div id="dueList"></div></div>
+</section>
+
+<section id="cash" class="page hidden">
+<div class="card"><div class="section">Add Cash Transaction</div>
+<form id="cashForm"><div class="grid3">
+<div class="field"><label>Date</label><input id="cDate" class="input" type="date" required></div>
+<div class="field"><label>Type</label><select id="cType" class="input"><option>Expense</option><option>Income</option></select></div>
+<div class="field"><label>Amount (LKR)</label><input id="cAmount" class="input" type="number" min="0.01" step="0.01" required></div>
+<div class="field"><label>Category</label><input id="cCategory" class="input" placeholder="Food, Salary, Transport..."></div>
+<div class="field"><label>Method</label><select id="cMethod" class="input"><option>Cash</option><option>Bank Transfer</option><option>Card</option><option>Mobile Wallet</option><option>Other</option></select></div>
+<div class="field"><label>Description</label><input id="cDesc" class="input"></div>
+</div><div class="actions"><button class="btn primary" type="submit">Save Transaction</button></div></form></div>
+<div class="card"><div class="section">Cash Transactions</div>
+<div class="grid2"><div class="field"><label>Month</label><input id="cashMonth" class="input" type="month"></div><div class="field"><label>Type</label><select id="cashFilter" class="input"><option>All</option><option>Income</option><option>Expense</option></select></div></div>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Method</th><th>Amount</th><th></th></tr></thead><tbody id="cashRows"></tbody></table><div id="cashEmpty" class="empty">No transactions yet.</div></div></div>
+</section>
+
+<section id="ledger" class="page hidden">
+<div class="card"><div class="section">Add Debtor / Creditor</div>
+<form id="ledgerForm"><div class="grid3">
+<div class="field"><label>Type</label><select id="lType" class="input"><option value="Debtor">Debtor — owes me</option><option value="Creditor">Creditor — I owe them</option></select></div>
+<div class="field"><label>Person / Company</label><input id="lName" class="input" required></div>
+<div class="field"><label>Phone / Contact</label><input id="lContact" class="input"></div>
+<div class="field"><label>Invoice / Reference</label><input id="lRef" class="input" placeholder="INV-2026-001"></div>
+<div class="field"><label>Record Date</label><input id="lDate" class="input" type="date" required></div>
+<div class="field"><label>Due Date</label><input id="lDue" class="input" type="date" required></div>
+<div class="field"><label>Original Amount (LKR)</label><input id="lAmount" class="input" type="number" min="0.01" step="0.01" required></div>
+<div class="field"><label>Notes</label><input id="lNotes" class="input"></div>
+</div><div class="notice" style="margin-top:10px">Current Balance is updated automatically: a Debtor record counts as money paid out, while a Creditor record counts as money received.</div><div class="actions"><button class="btn primary" type="submit">Create Record</button></div></form></div>
+<div class="card"><div class="grid2"><div><div class="section">Ledger</div><div id="ledgerCount" class="note"></div></div><div class="field"><label>Show</label><select id="ledgerFilter" class="input"><option>All</option><option>Debtor</option><option>Creditor</option><option>Open</option><option>Overdue</option><option>Settled</option></select></div></div>
+<div class="tablewrap"><table><thead><tr><th>Type</th><th>Name</th><th>Reference</th><th>Due</th><th>Original</th><th>Paid</th><th>Outstanding</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ledgerRows"></tbody></table><div id="ledgerEmpty" class="empty">No debtor or creditor records yet.</div></div></div>
+<div id="payCard" class="card hidden"><div class="section">Record Payment</div><div id="payInfo" class="notice"></div>
+<form id="payForm" style="margin-top:10px"><div class="grid3"><div class="field"><label>Date</label><input id="pDate" class="input" type="date" required></div><div class="field"><label>Amount</label><input id="pAmount" class="input" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Method</label><select id="pMethod" class="input"><option>Cash</option><option>Bank Transfer</option><option>Card</option><option>Mobile Wallet</option><option>Other</option></select></div><div class="field"><label>Note / Receipt No.</label><input id="pNote" class="input"></div><div class="field"><label>Cash Ledger</label><div class="notice">This payment automatically updates Current Balance.</div></div></div><div class="actions"><button class="btn primary" type="submit">Save Payment</button><button id="cancelPay" class="btn" type="button">Cancel</button></div></form></div>
+<div id="histCard" class="card hidden"><div class="section">Payment History</div><div id="histTitle" class="note"></div><div class="tablewrap"><table style="min-width:600px"><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Note</th></tr></thead><tbody id="histRows"></tbody></table><div id="histEmpty" class="empty">No payments yet.</div></div></div>
+</section>
+
+<section id="settings" class="page hidden">
+<div class="card"><div class="section">Settings</div><div class="grid2"><div class="field"><label>Opening Balance (LKR)</label><input id="opening" class="input" type="number" min="0" step="0.01"></div><div class="field"><label>Optional PIN</label><input id="newPin" class="input" type="password" inputmode="numeric" maxlength="8" placeholder="Leave blank to disable"></div></div><div class="actions"><button id="saveSettings" class="btn primary">Save Settings</button><button id="lockNow" class="btn">Lock Now</button></div><div id="settingsMsg" class="note"></div></div>
+<div class="card"><div class="section">Backup & Export</div><div class="notice">Records are saved in this phone/browser. Make a JSON backup regularly, especially before changing phones or clearing browser data.</div><div class="actions"><button id="backup" class="btn primary">Backup JSON</button><label class="btn">Restore JSON<input id="restore" type="file" accept=".json,application/json" class="hidden"></label><button id="cashCsv" class="btn">Export Cash CSV</button><button id="ledgerCsv" class="btn">Export Ledger CSV</button></div></div>
+<div class="card"><div class="section">Danger Zone</div><button id="clearAll" class="btn danger">Delete All App Data</button></div>
+</section>
+</main>
+
+<nav class="bottom"><div class="bottomin"><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="cash">Cash</button><button class="nav" data-page="ledger">Debts</button><button class="nav" data-page="settings">Settings</button></div></nav>
+
+<script>
+const KEY='my_money_manager_v2'; let state={openingBalance:0,pinHash:'',cash:[],ledger:[]},selected=null,deferredPrompt=null;
+const $=id=>document.getElementById(id), pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}, monthNow=()=>today().slice(0,7);
+const money=n=>'LKR '+Number(n||0).toLocaleString('en-LK',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x)state={...state,...x}}catch{}} function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+async function hashPin(pin){if(!pin)return'';const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pin));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function paid(a){return(a.payments||[]).reduce((s,p)=>s+Number(p.amount||0),0)} function out(a){return Math.max(0,Number(a.amount||0)-paid(a))} function over(a){return out(a)>0&&a.due<today()} function status(a){return out(a)<=0?'Settled':over(a)?'Overdue':a.due===today()?'Due Today':'Open'}
+function cashTotals(list=state.cash){let i=0,e=0;list.forEach(x=>x.type==='Income'?i+=Number(x.amount):e+=Number(x.amount));return{income:i,expense:e,net:i-e}}
+function ledgerTotals(){let r=0,p=0,or=0,op=0;state.ledger.forEach(a=>{let o=out(a);if(a.type==='Debtor'){r+=o;if(over(a))or+=o}else{p+=o;if(over(a))op+=o}});return{r,p,or,op}}
+function ledgerCashType(a){return a.type==='Debtor'?'Income':'Expense'}
+function ledgerCashCategory(a){return a.type==='Debtor'?'Debtor Collection':'Creditor Payment'}
+function ledgerCashDesc(a){return a.name+(a.ref?' - '+a.ref:'')}
+function ledgerOpeningCashType(a){return a.type==='Debtor'?'Expense':'Income'}
+function ledgerOpeningCashCategory(a){return a.type==='Debtor'?'Debtor Advance':'Creditor Receipt'}
+function ledgerOpeningCashDesc(a){return (a.type==='Debtor'?'Given to ':'Received from ')+a.name+(a.ref?' - '+a.ref:'')}
+function reconcileLedgerCash(){
+ let changed=false;
+ state.ledger.forEach(a=>{
+   // Every debtor/creditor record represents cash that passed through the Current Account.
+   // Debtor created = money out. Creditor created = money in.
+   let openingLinked=state.cash.find(x=>x.source==='ledger'&&String(x.ledgerId)===String(a.id)&&x.ledgerAction==='principal');
+   if(!openingLinked){
+     const type=ledgerOpeningCashType(a), category=ledgerOpeningCashCategory(a), desc=ledgerOpeningCashDesc(a);
+     let legacy=state.cash.find(x=>
+       !x.source &&
+       x.type===type &&
+       x.date===a.date &&
+       Math.abs(Number(x.amount||0)-Number(a.amount||0))<0.001 &&
+       (x.category===category || String(x.desc||'').includes(a.name))
+     );
+     if(legacy){
+       legacy.source='ledger'; legacy.ledgerId=a.id; legacy.ledgerAction='principal'; changed=true;
+     }else{
+       state.cash.push({
+         id:Date.now()+Math.floor(Math.random()*1000000),
+         date:a.date,
+         type,
+         amount:Number(a.amount),
+         category,
+         method:'Current Account',
+         desc,
+         source:'ledger',
+         ledgerId:a.id,
+         ledgerAction:'principal'
+       });
+       changed=true;
+     }
+   }
+
+   (a.payments||[]).forEach(p=>{
+     let linked=state.cash.find(x=>x.source==='ledger'&&String(x.ledgerId)===String(a.id)&&String(x.paymentId)===String(p.id));
+     if(linked)return;
+     const type=ledgerCashType(a), category=ledgerCashCategory(a), desc=ledgerCashDesc(a);
+     let legacy=state.cash.find(x=>
+       !x.source &&
+       x.type===type &&
+       x.date===p.date &&
+       Math.abs(Number(x.amount||0)-Number(p.amount||0))<0.001 &&
+       (x.category===category || String(x.desc||'').includes(a.name))
+     );
+     if(legacy){
+       legacy.source='ledger'; legacy.ledgerId=a.id; legacy.paymentId=p.id; legacy.ledgerAction='payment'; changed=true;
+     }else{
+       state.cash.push({
+         id:Date.now()+Math.floor(Math.random()*1000000),
+         date:p.date,
+         type,
+         amount:Number(p.amount),
+         category,
+         method:p.method||'Cash',
+         desc,
+         source:'ledger',
+         ledgerId:a.id,
+         paymentId:p.id,
+         ledgerAction:'payment'
+       });
+       changed=true;
+     }
+   });
+ });
+ if(changed)save();
+}
+function go(pg){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$(pg).classList.remove('hidden');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===pg));scrollTo({top:0,behavior:'smooth'})} document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function renderDash(){let c=cashTotals(),l=ledgerTotals(),m=cashTotals(state.cash.filter(x=>x.date.startsWith(monthNow()))),bal=Number(state.openingBalance||0)+c.net;$('income').textContent=money(c.income);$('expense').textContent=money(c.expense);$('balance').textContent=money(bal);$('balance').className='value '+(bal>=0?'good':'bad');$('monthNet').textContent=money(m.net);$('monthNet').className='value '+(m.net>=0?'good':'bad');$('recv').textContent=money(l.r);$('payable').textContent=money(l.p);$('overRecv').textContent=money(l.or);$('overPay').textContent=money(l.op);let arr=[...state.ledger].filter(a=>out(a)>0).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,8);$('dueList').innerHTML=arr.length?arr.map(a=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><div><b>${esc(a.name)}</b><div class="note">${a.type} • ${esc(a.ref||'No reference')} • Due ${a.due}</div></div><div style="text-align:right"><b class="${a.type==='Debtor'?'good':'bad'}">${money(out(a))}</b><div class="note ${over(a)?'bad':''}">${status(a)}</div></div></div>`).join(''):'<div class="empty">No open debts.</div>'}
+function renderCash(){let m=$('cashMonth').value,t=$('cashFilter').value,rows=[...state.cash].filter(x=>(!m||x.date.startsWith(m))&&(t==='All'||x.type===t)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);$('cashEmpty').style.display=rows.length?'none':'block';$('cashRows').innerHTML=rows.map(x=>`<tr><td>${x.date}</td><td><span class="pill ${x.type==='Income'?'good':'bad'}">${x.type}</span></td><td>${esc(x.category||'—')}</td><td>${esc(x.desc||'—')}</td><td>${esc(x.method)}</td><td class="${x.type==='Income'?'good':'bad'}"><b>${x.type==='Income'?'+':'-'} ${money(x.amount)}</b></td><td><button class="btn danger" data-delcash="${x.id}">Delete</button></td></tr>`).join('')}
+function filtLedger(){let f=$('ledgerFilter').value;return[...state.ledger].filter(a=>f==='All'||a.type===f||(f==='Open'&&out(a)>0)||(f==='Overdue'&&over(a))||(f==='Settled'&&out(a)<=0)).sort((a,b)=>(over(a)?0:1)-(over(b)?0:1)||a.due.localeCompare(b.due))}
+function renderLedger(){let rows=filtLedger();$('ledgerCount').textContent=rows.length+' record'+(rows.length===1?'':'s');$('ledgerEmpty').style.display=rows.length?'none':'block';$('ledgerRows').innerHTML=rows.map(a=>`<tr><td><span class="pill ${a.type==='Debtor'?'good':'bad'}">${a.type}</span></td><td><b>${esc(a.name)}</b><div class="note">${esc(a.contact||'')}</div></td><td>${esc(a.ref||'—')}</td><td>${a.due}</td><td>${money(a.amount)}</td><td>${money(paid(a))}</td><td><b class="${a.type==='Debtor'?'good':'bad'}">${money(out(a))}</b></td><td><span class="pill ${status(a)==='Overdue'?'bad':status(a)==='Settled'?'good':'warn'}">${status(a)}</span></td><td><div class="actions"><button class="btn" data-pay="${a.id}" ${out(a)<=0?'disabled':''}>Payment</button><button class="btn" data-hist="${a.id}">History</button><button class="btn danger" data-delledger="${a.id}">Delete</button></div></td></tr>`).join('')}
+function render(){renderDash();renderCash();renderLedger();$('opening').value=state.openingBalance||0}
+$('cDate').value=today();$('cashMonth').value=monthNow();$('lDate').value=today();$('lDue').value=today();$('pDate').value=today();
+$('cashMonth').onchange=renderCash;$('cashFilter').onchange=renderCash;$('ledgerFilter').onchange=renderLedger;
+$('cashForm').onsubmit=e=>{e.preventDefault();let a=Number($('cAmount').value);if(!(a>0))return;state.cash.push({id:Date.now(),date:$('cDate').value,type:$('cType').value,amount:Math.round(a*100)/100,category:$('cCategory').value.trim(),method:$('cMethod').value,desc:$('cDesc').value.trim()});save();$('cAmount').value='';$('cDesc').value='';render()};
+$('ledgerForm').onsubmit=e=>{e.preventDefault();let amount=Number($('lAmount').value);if(!(amount>0))return;let a={id:Date.now(),type:$('lType').value,name:$('lName').value.trim(),contact:$('lContact').value.trim(),ref:$('lRef').value.trim(),date:$('lDate').value,due:$('lDue').value,amount:Math.round(amount*100)/100,notes:$('lNotes').value.trim(),payments:[]};state.ledger.push(a);state.cash.push({id:Date.now()+1,date:a.date,type:ledgerOpeningCashType(a),amount:a.amount,category:ledgerOpeningCashCategory(a),method:'Current Account',desc:ledgerOpeningCashDesc(a),source:'ledger',ledgerId:a.id,ledgerAction:'principal'});save();['lName','lContact','lRef','lAmount','lNotes'].forEach(id=>$(id).value='');render()};
+$('cashRows').onclick=e=>{let b=e.target.closest('[data-delcash]');if(!b)return;let item=state.cash.find(x=>String(x.id)===String(b.dataset.delcash));if(item&&item.source==='ledger'){alert('This cash entry is linked to a debtor/creditor payment. Manage it from the Debtors & Creditors ledger.');return}if(confirm('Delete this transaction?')){state.cash=state.cash.filter(x=>String(x.id)!==String(b.dataset.delcash));save();render()}};
+$('ledgerRows').onclick=e=>{let p=e.target.closest('[data-pay]'),h=e.target.closest('[data-hist]'),d=e.target.closest('[data-delledger]');if(p){let a=state.ledger.find(x=>x.id===Number(p.dataset.pay));selected=a.id;$('payCard').classList.remove('hidden');$('payInfo').innerHTML=`<b>${esc(a.name)}</b> • ${a.type}<br>Reference: ${esc(a.ref||'—')}<br>Outstanding: <b>${money(out(a))}</b>`;$('pAmount').value=out(a).toFixed(2);$('payCard').scrollIntoView({behavior:'smooth'})}if(h){let a=state.ledger.find(x=>x.id===Number(h.dataset.hist)),ps=[...(a.payments||[])].sort((x,y)=>y.date.localeCompare(x.date));$('histCard').classList.remove('hidden');$('histTitle').textContent=`${a.name} • ${a.ref||'No reference'} • Outstanding ${money(out(a))}`;$('histEmpty').style.display=ps.length?'none':'block';$('histRows').innerHTML=ps.map(x=>`<tr><td>${x.date}</td><td>${money(x.amount)}</td><td>${esc(x.method)}</td><td>${esc(x.note||'—')}</td></tr>`).join('');$('histCard').scrollIntoView({behavior:'smooth'})}if(d&&confirm('Delete this record and payment history?')){let ledgerId=String(d.dataset.delledger);state.cash=state.cash.filter(x=>!(x.source==='ledger'&&String(x.ledgerId)===ledgerId));state.ledger=state.ledger.filter(x=>String(x.id)!==ledgerId);save();render()}};
+$('cancelPay').onclick=()=>{$('payCard').classList.add('hidden');selected=null};
+$('payForm').onsubmit=e=>{e.preventDefault();let a=state.ledger.find(x=>x.id===selected),amt=Number($('pAmount').value);if(!a||!(amt>0)||amt>out(a)+.001){alert('Invalid payment amount.');return}let p={id:Date.now(),date:$('pDate').value,amount:Math.round(amt*100)/100,method:$('pMethod').value,note:$('pNote').value.trim()};a.payments.push(p);state.cash.push({id:Date.now()+1,date:p.date,type:ledgerCashType(a),amount:p.amount,category:ledgerCashCategory(a),method:p.method,desc:ledgerCashDesc(a),source:'ledger',ledgerId:a.id,paymentId:p.id,ledgerAction:'payment'});save();$('pNote').value='';$('payCard').classList.add('hidden');selected=null;render()};
+$('saveSettings').onclick=async()=>{state.openingBalance=Math.max(0,Number($('opening').value)||0);let p=$('newPin').value.trim();state.pinHash=await hashPin(p);$('newPin').value='';save();$('settingsMsg').textContent=p?'Settings saved. PIN enabled.':'Settings saved. PIN disabled.'};
+$('lockNow').onclick=()=>{if(state.pinHash){$('lock').classList.remove('hidden');$('unlockPin').value=''}else $('settingsMsg').textContent='Set a PIN first.'};
+$('unlock').onclick=async()=>{if(await hashPin($('unlockPin').value)===state.pinHash){$('lock').classList.add('hidden');$('unlockMsg').textContent=''}else $('unlockMsg').textContent='Incorrect PIN.'};
+function dl(name,text,type){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),400)}function q(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+$('backup').onclick=()=>dl('money-manager-backup.json',JSON.stringify(state,null,2),'application/json');
+$('restore').onchange=e=>{let f=e.target.files?.[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(String(r.result));if(!Array.isArray(x.cash)||!Array.isArray(x.ledger))throw 0;state={openingBalance:Number(x.openingBalance)||0,pinHash:String(x.pinHash||''),cash:x.cash,ledger:x.ledger};save();reconcileLedgerCash();render();alert('Backup restored.')}catch{alert('Invalid backup file.')}e.target.value=''};r.readAsText(f)};
+$('cashCsv').onclick=()=>{let a=[['Date','Type','Category','Description','Method','Amount LKR'].map(q).join(',')];state.cash.forEach(x=>a.push([x.date,x.type,x.category,x.desc,x.method,Number(x.amount).toFixed(2)].map(q).join(',')));dl('cash-transactions.csv',a.join('\n'),'text/csv')};
+$('ledgerCsv').onclick=()=>{let a=[['Type','Name','Contact','Reference','Record Date','Due Date','Original Amount','Paid','Outstanding','Status','Notes'].map(q).join(',')];state.ledger.forEach(x=>a.push([x.type,x.name,x.contact,x.ref,x.date,x.due,Number(x.amount).toFixed(2),paid(x).toFixed(2),out(x).toFixed(2),status(x),x.notes].map(q).join(',')));dl('debtors-creditors.csv',a.join('\n'),'text/csv')};
+$('clearAll').onclick=()=>{if(confirm('Delete ALL app data?')){localStorage.removeItem(KEY);state={openingBalance:0,pinHash:'',cash:[],ledger:[]};render()}};
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.add('hidden')};
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+load();reconcileLedgerCash();render();if(state.pinHash)$('lock').classList.remove('hidden');
+</script>
+</body></html>
