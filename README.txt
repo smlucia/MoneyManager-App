@@ -1,6 +1,6 @@
 MY MONEY MANAGER - ANDROID + iPHONE / iPAD INSTALLATION
 
-VERSION v2.3 iOS COMPATIBLE
+VERSION v2.4 iOS COMPATIBLE
 
 UPLOAD
 1) Unzip this folder.
@@ -30,15 +30,24 @@ DATA
 - To move between Android and iPhone: Backup JSON on the old device and Restore JSON on the new device.
 - Offline use works after the app has successfully loaded online at least once.
 
-UPDATE v2.3
+UPDATE v2.4
 - Added iPhone/iPad PWA metadata.
 - Added Apple touch icon.
 - Added iOS-specific installation guidance.
 - Improved backup/CSV saving on iOS using the Share Sheet when available.
 - Kept all v2.2 Current Balance, Debtor and Creditor accounting behavior unchanged.
-- Service worker cache updated to v2.3.
+- Service worker cache updated to v2.4.
 
 WHEN UPDATING GITHUB
 Replace all files with this package, especially index.html, manifest.webmanifest, sw.js and apple-touch-icon.png.
 After GitHub Pages deploys, open the website once in Safari/Chrome while online.
 If an older installed shortcut is cached, close/reopen it. If needed, remove the old Home Screen shortcut and add it again.
+
+
+v2.4 MOBILE INTERFACE UPDATE
+- Mobile-first dashboard with Current Balance highlighted.
+- One-tap Quick Add buttons for Income, Expense, Debtor and Creditor.
+- Transaction, ledger and payment-history tables become readable card lists on phones.
+- Larger 16px form controls to prevent iPhone Safari auto-zoom.
+- Larger touch targets and simplified bottom navigation for Android/iOS.
+- Existing transaction/current-account/debtor/creditor calculations are unchanged.

@@ -1,4 +1,4 @@
-const CACHE='money-manager-v2-3-ios';
+const CACHE='money-manager-v2-4-mobile';
 const ASSETS=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','apple-touch-icon.png'];
 
 self.addEventListener('install',e=>{

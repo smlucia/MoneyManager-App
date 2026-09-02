@@ -4,7 +4,7 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f4f7fa",
-  "theme_color": "#0f3d5e",
+  "theme_color": "#0f4c6e",
   "description": "Personal income, expense, debtor and creditor manager in LKR.",
   "icons": [
     {

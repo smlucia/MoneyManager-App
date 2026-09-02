@@ -12,19 +12,43 @@
 <title>My Money Manager</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
-:root{--bg:#f4f7fa;--card:#fff;--text:#17202a;--muted:#6b7280;--line:#dbe3ea;--primary:#0f3d5e;--good:#16794b;--bad:#b42318;--warn:#a15c00}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 12px 92px}.top{position:sticky;top:0;background:rgba(244,247,250,.97);z-index:10;padding:8px 0}
-.brand{display:flex;justify-content:space-between;gap:10px;align-items:center}.brand h1{margin:0;font-size:20px}.sub,.note{font-size:12px;color:var(--muted)}
-.card,.stat{background:#fff;border:1px solid var(--line);border-radius:14px}.card{padding:14px;margin-top:12px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.stat{padding:12px;min-width:0}.label{font-size:12px;color:var(--muted)}.value{font-size:19px;font-weight:800;margin-top:4px}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
-.tabs{display:flex;gap:6px;overflow:auto;padding:8px 0}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:700}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.input{width:100%;min-height:46px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{min-height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 12px;font-weight:700}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.danger{color:var(--bad)}
-.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:11px;margin-top:10px}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;color:var(--muted);background:#f8fafc}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:12px;font-weight:700}.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:22px}.section{font-size:16px;font-weight:800;margin-bottom:10px}.notice{padding:11px;border:1px solid var(--line);background:#f8fafc;border-radius:10px;font-size:13px;line-height:1.45}
-.lock{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:18px;z-index:99}.lockbox{width:min(390px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
-.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:20;padding-bottom:max(5px,env(safe-area-inset-bottom))}.bottomin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px}.nav{border:0;background:transparent;padding:9px 3px;border-radius:9px;font-size:11px;font-weight:700;color:var(--muted)}.nav.active{background:#e8f0f5;color:var(--primary)}
-.iosInstall{position:fixed;inset:0;background:rgba(15,25,35,.48);z-index:120;display:flex;align-items:flex-end;justify-content:center;padding:18px}.iosInstallBox{width:min(520px,100%);background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.22)}.iosInstallBox h3{margin:0 0 8px}.steps{margin:8px 0 0;padding-left:20px;line-height:1.7}
-@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.brand h1{font-size:18px}}
+:root{
+  --bg:#f3f6f9;--card:#ffffff;--text:#17212b;--muted:#708090;--line:#e2e8ef;
+  --primary:#0f4c6e;--primary2:#0b6b8a;--primarySoft:#eaf4f8;
+  --good:#087a55;--goodSoft:#e8f7f1;--bad:#bd2c22;--badSoft:#fff0ee;
+  --warn:#a15a00;--warnSoft:#fff6e6;--shadow:0 6px 22px rgba(27,48,67,.07)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overscroll-behavior-y:none}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:1080px;margin:auto;padding:0 14px 104px}
+.top{position:sticky;top:0;z-index:30;margin:0 -14px;padding:calc(10px + env(safe-area-inset-top)) 14px 5px;background:rgba(243,246,249,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,232,239,.72)}
+.brand{display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px}.brand h1{margin:0;font-size:21px;letter-spacing:-.35px}.sub,.note{font-size:12px;color:var(--muted);line-height:1.4}
+.card,.stat{background:var(--card);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}
+.card{padding:16px;margin-top:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:13px}.stat{padding:14px;min-width:0;overflow:hidden}.label{font-size:12px;color:var(--muted);font-weight:650}.value{font-size:20px;font-weight:850;margin-top:5px;letter-spacing:-.45px;white-space:nowrap}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.balance-stat{background:linear-gradient(135deg,var(--primary),var(--primary2));border-color:transparent}.balance-stat .label,.balance-stat .value{color:#fff!important}.balance-stat .label{opacity:.82}.balance-stat .value{font-size:25px}
+.tabs{display:flex;gap:7px;overflow:auto;padding:9px 0 4px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:750;color:#52606d}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(15,76,110,.18)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px 2px}.input{width:100%;min-height:49px;border:1px solid #cfd9e2;border-radius:12px;padding:11px 12px;background:#fff;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;font-size:16px}.input:focus{border-color:#57a2bd;box-shadow:0 0 0 3px rgba(15,108,138,.11)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.btn{min-height:46px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-weight:780;color:#3b4752}.btn:active{transform:translateY(1px)}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 5px 14px rgba(15,76,110,.16)}.btn.danger{color:var(--bad);border-color:#f0d2cf;background:#fffafa}.btn:disabled{opacity:.45;cursor:not-allowed}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:13px;margin-top:11px;background:#fff}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:#f8fafc}tbody tr:last-child td{border-bottom:0}.pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:4px 9px;font-size:11px;font-weight:800;background:#fff}.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:25px 12px}.section{font-size:17px;font-weight:850;margin-bottom:12px;letter-spacing:-.2px}.notice{padding:12px 13px;border:1px solid #dbe5ec;background:#f7fafc;border-radius:12px;font-size:13px;line-height:1.5;color:#52606d}
+.quick-card{padding:14px}.quick-title{font-size:13px;font-weight:800;color:#536271;margin-bottom:10px}.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.quick{border:1px solid var(--line);background:#fff;border-radius:14px;min-height:72px;padding:9px 7px;font-weight:800;color:#3d4a55;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.quick .qi{font-size:21px;line-height:1}.quick.income{background:var(--goodSoft);border-color:#cbeade;color:var(--good)}.quick.expense{background:var(--badSoft);border-color:#f3d7d3;color:var(--bad)}.quick.debtor,.quick.creditor{background:var(--primarySoft);border-color:#d5e7ef;color:var(--primary)}
+.lock{position:fixed;inset:0;background:linear-gradient(160deg,#eef4f7,#f7f9fb);display:flex;align-items:center;justify-content:center;padding:20px;z-index:99}.lockbox{width:min(390px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 22px 60px rgba(27,48,67,.14)}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:40;padding-bottom:max(5px,env(safe-area-inset-bottom));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.bottomin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 7px}.nav{border:0;background:transparent;padding:6px 3px;border-radius:12px;font-size:10.5px;font-weight:760;color:var(--muted);min-height:53px;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center}.nav .ni{font-size:19px;line-height:1.1}.nav.active{background:var(--primarySoft);color:var(--primary)}
+.iosInstall{position:fixed;inset:0;background:rgba(15,25,35,.48);z-index:120;display:flex;align-items:flex-end;justify-content:center;padding:18px}.iosInstallBox{width:min(520px,100%);background:#fff;border-radius:22px;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 18px 60px rgba(0,0,0,.22)}.iosInstallBox h3{margin:0 0 8px}.steps{margin:8px 0 0;padding-left:20px;line-height:1.75}
+@media(max-width:720px){
+  .app{padding:0 10px 102px}.top{margin:0 -10px;padding-left:12px;padding-right:12px}.brand h1{font-size:19px}.brand .sub{font-size:11px}.tabs{display:none}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:13px 12px;box-shadow:0 4px 16px rgba(27,48,67,.055)}.value{font-size:17px;white-space:normal}.balance-stat{grid-column:1/-1;order:-1;padding:16px}.balance-stat .value{font-size:28px;white-space:nowrap}
+  .grid2,.grid3{grid-template-columns:1fr;gap:10px}.card{padding:14px;border-radius:16px;margin-top:10px}.section{font-size:16px;margin-bottom:11px}.notice{font-size:12.5px}
+  .actions{display:grid;grid-template-columns:1fr 1fr}.actions .btn:only-child{grid-column:1/-1}.actions .primary[type="submit"]{grid-column:1/-1}.actions label.btn{display:flex;align-items:center;justify-content:center}.btn{min-height:49px}
+  .quick-card{padding:12px}.quick-actions{grid-template-columns:repeat(4,1fr);gap:7px}.quick{min-height:68px;padding:7px 3px;font-size:11px}.quick .qi{font-size:20px}
+  .tablewrap{border:0;background:transparent;overflow:visible;border-radius:0}.tablewrap table{display:block;min-width:0!important}.tablewrap thead{display:none}.tablewrap tbody{display:grid;gap:10px}.tablewrap tbody tr{display:grid;background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px 12px;box-shadow:0 4px 14px rgba(27,48,67,.055)}.tablewrap tbody td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;text-align:right;font-size:13px}.tablewrap tbody td::before{color:var(--muted);font-size:11px;font-weight:750;text-align:left;flex:0 0 34%}.tablewrap tbody td>div{max-width:65%}
+  #cashRows td:nth-child(1)::before{content:"Date"}#cashRows td:nth-child(2)::before{content:"Type"}#cashRows td:nth-child(3)::before{content:"Category"}#cashRows td:nth-child(4)::before{content:"Description"}#cashRows td:nth-child(5)::before{content:"Method"}#cashRows td:nth-child(6)::before{content:"Amount"}#cashRows td:nth-child(7)::before{content:""}#cashRows td:nth-child(7){padding-top:9px}#cashRows td:nth-child(7) .btn{width:100%;min-height:42px}
+  #ledgerRows td:nth-child(1)::before{content:"Type"}#ledgerRows td:nth-child(2)::before{content:"Name"}#ledgerRows td:nth-child(3)::before{content:"Reference"}#ledgerRows td:nth-child(4)::before{content:"Due"}#ledgerRows td:nth-child(5)::before{content:"Original"}#ledgerRows td:nth-child(6)::before{content:"Paid"}#ledgerRows td:nth-child(7)::before{content:"Outstanding"}#ledgerRows td:nth-child(8)::before{content:"Status"}#ledgerRows td:nth-child(9)::before{content:""}#ledgerRows td:nth-child(9){display:block;padding-top:8px}#ledgerRows td:nth-child(9) .actions{margin:0;display:grid;grid-template-columns:1fr 1fr;max-width:100%}#ledgerRows td:nth-child(9) .actions .danger{grid-column:1/-1}
+  #histRows td:nth-child(1)::before{content:"Date"}#histRows td:nth-child(2)::before{content:"Amount"}#histRows td:nth-child(3)::before{content:"Method"}#histRows td:nth-child(4)::before{content:"Note"}
+  #install{min-height:40px;padding:8px 10px;font-size:12px}.empty{background:#fff;border:1px dashed var(--line);border-radius:14px}
+}
+@media(max-width:390px){.quick-actions{grid-template-columns:repeat(2,1fr)}.quick{min-height:60px;flex-direction:row}.actions{grid-template-columns:1fr}.actions>*{grid-column:1!important}.brand .sub{max-width:220px}.value{font-size:16px}}
 </style>
 </head>
 <body>
@@ -34,7 +58,7 @@ button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 
 
 <main class="app">
 <div class="top">
-<div class="brand"><div><h1>My Money Manager</h1><div class="sub">Income • Expenses • Debtors • Creditors • LKR • v2.3 iOS</div></div><button id="install" class="btn hidden">Install App</button></div>
+<div class="brand"><div><h1>My Money Manager</h1><div class="sub">Personal finance • LKR • v2.4 Mobile</div></div><button id="install" class="btn hidden">Install App</button></div>
 <div class="tabs"><button class="tab active" data-page="dashboard">Dashboard</button><button class="tab" data-page="cash">Income & Expenses</button><button class="tab" data-page="ledger">Debtors & Creditors</button><button class="tab" data-page="settings">Settings</button></div>
 </div>
 
@@ -42,9 +66,15 @@ button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 
 <div class="stats">
 <div class="stat"><div class="label">Cash Income</div><div id="income" class="value good">LKR 0.00</div></div>
 <div class="stat"><div class="label">Cash Expenses</div><div id="expense" class="value bad">LKR 0.00</div></div>
-<div class="stat"><div class="label">Current Balance</div><div id="balance" class="value">LKR 0.00</div></div>
+<div class="stat balance-stat"><div class="label">Current Balance</div><div id="balance" class="value">LKR 0.00</div></div>
 <div class="stat"><div class="label">This Month Net</div><div id="monthNet" class="value">LKR 0.00</div></div>
 </div>
+<div class="card quick-card"><div class="quick-title">Quick Add</div><div class="quick-actions">
+<button class="quick income" data-quick="income"><span class="qi">＋</span><span>Income</span></button>
+<button class="quick expense" data-quick="expense"><span class="qi">−</span><span>Expense</span></button>
+<button class="quick debtor" data-quick="debtor"><span class="qi">↙</span><span>Debtor</span></button>
+<button class="quick creditor" data-quick="creditor"><span class="qi">↗</span><span>Creditor</span></button>
+</div></div>
 <div class="stats">
 <div class="stat"><div class="label">Debtors Owe Me</div><div id="recv" class="value good">LKR 0.00</div></div>
 <div class="stat"><div class="label">I Owe Creditors</div><div id="payable" class="value bad">LKR 0.00</div></div>
@@ -95,7 +125,12 @@ button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 
 </section>
 </main>
 
-<nav class="bottom"><div class="bottomin"><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="cash">Cash</button><button class="nav" data-page="ledger">Debts</button><button class="nav" data-page="settings">Settings</button></div></nav>
+<nav class="bottom"><div class="bottomin">
+<button class="nav active" data-page="dashboard"><span class="ni">⌂</span><span>Home</span></button>
+<button class="nav" data-page="cash"><span class="ni">↕</span><span>Cash</span></button>
+<button class="nav" data-page="ledger"><span class="ni">⇄</span><span>Debts</span></button>
+<button class="nav" data-page="settings"><span class="ni">⚙</span><span>Settings</span></button>
+</div></nav>
 
 <script>
 const KEY='my_money_manager_v2'; let state={openingBalance:0,pinHash:'',cash:[],ledger:[]},selected=null,deferredPrompt=null;
@@ -182,6 +217,7 @@ function reconcileLedgerCash(){
  if(changed)save();
 }
 function go(pg){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$(pg).classList.remove('hidden');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===pg));scrollTo({top:0,behavior:'smooth'})} document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{const q=b.dataset.quick;if(q==='income'||q==='expense'){go('cash');$('cType').value=q==='income'?'Income':'Expense';setTimeout(()=>$('cAmount').focus(),220)}else{go('ledger');$('lType').value=q==='debtor'?'Debtor':'Creditor';setTimeout(()=>$('lName').focus(),220)}});
 function renderDash(){let c=cashTotals(),l=ledgerTotals(),m=cashTotals(state.cash.filter(x=>x.date.startsWith(monthNow()))),bal=Number(state.openingBalance||0)+c.net;$('income').textContent=money(c.income);$('expense').textContent=money(c.expense);$('balance').textContent=money(bal);$('balance').className='value '+(bal>=0?'good':'bad');$('monthNet').textContent=money(m.net);$('monthNet').className='value '+(m.net>=0?'good':'bad');$('recv').textContent=money(l.r);$('payable').textContent=money(l.p);$('overRecv').textContent=money(l.or);$('overPay').textContent=money(l.op);let arr=[...state.ledger].filter(a=>out(a)>0).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,8);$('dueList').innerHTML=arr.length?arr.map(a=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><div><b>${esc(a.name)}</b><div class="note">${a.type} • ${esc(a.ref||'No reference')} • Due ${a.due}</div></div><div style="text-align:right"><b class="${a.type==='Debtor'?'good':'bad'}">${money(out(a))}</b><div class="note ${over(a)?'bad':''}">${status(a)}</div></div></div>`).join(''):'<div class="empty">No open debts.</div>'}
 function renderCash(){let m=$('cashMonth').value,t=$('cashFilter').value,rows=[...state.cash].filter(x=>(!m||x.date.startsWith(m))&&(t==='All'||x.type===t)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);$('cashEmpty').style.display=rows.length?'none':'block';$('cashRows').innerHTML=rows.map(x=>`<tr><td>${x.date}</td><td><span class="pill ${x.type==='Income'?'good':'bad'}">${x.type}</span></td><td>${esc(x.category||'—')}</td><td>${esc(x.desc||'—')}</td><td>${esc(x.method)}</td><td class="${x.type==='Income'?'good':'bad'}"><b>${x.type==='Income'?'+':'-'} ${money(x.amount)}</b></td><td><button class="btn danger" data-delcash="${x.id}">Delete</button></td></tr>`).join('')}
 function filtLedger(){let f=$('ledgerFilter').value;return[...state.ledger].filter(a=>f==='All'||a.type===f||(f==='Open'&&out(a)>0)||(f==='Overdue'&&over(a))||(f==='Settled'&&out(a)<=0)).sort((a,b)=>(over(a)?0:1)-(over(b)?0:1)||a.due.localeCompare(b.due))}
