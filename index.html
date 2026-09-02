@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f3d5e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Money Manager">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <title>My Money Manager</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
@@ -18,15 +23,18 @@ button,input,select{font:inherit}.app{max-width:1050px;margin:auto;padding:12px 
 .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:11px;margin-top:10px}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;color:var(--muted);background:#f8fafc}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:12px;font-weight:700}.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:22px}.section{font-size:16px;font-weight:800;margin-bottom:10px}.notice{padding:11px;border:1px solid var(--line);background:#f8fafc;border-radius:10px;font-size:13px;line-height:1.45}
 .lock{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:18px;z-index:99}.lockbox{width:min(390px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
 .bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:20;padding-bottom:max(5px,env(safe-area-inset-bottom))}.bottomin{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px}.nav{border:0;background:transparent;padding:9px 3px;border-radius:9px;font-size:11px;font-weight:700;color:var(--muted)}.nav.active{background:#e8f0f5;color:var(--primary)}
+.iosInstall{position:fixed;inset:0;background:rgba(15,25,35,.48);z-index:120;display:flex;align-items:flex-end;justify-content:center;padding:18px}.iosInstallBox{width:min(520px,100%);background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.22)}.iosInstallBox h3{margin:0 0 8px}.steps{margin:8px 0 0;padding-left:20px;line-height:1.7}
 @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.brand h1{font-size:18px}}
 </style>
 </head>
 <body>
 <div id="lock" class="lock hidden"><div class="lockbox"><h2 style="margin:0">My Money Manager</h2><div class="note">Enter your PIN</div><div class="field" style="margin-top:12px"><label>PIN</label><input id="unlockPin" class="input" type="password" inputmode="numeric" maxlength="8"></div><div class="actions"><button id="unlock" class="btn primary">Unlock</button></div><div id="unlockMsg" class="note"></div></div></div>
 
+<div id="iosInstall" class="iosInstall hidden"><div class="iosInstallBox"><h3>Install on iPhone / iPad</h3><div class="note">Apple Safari does not show the same automatic install prompt as Android.</div><ol class="steps"><li>Open this page in <b>Safari</b>.</li><li>Tap the <b>Share</b> button.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol><div class="actions"><button id="closeIosInstall" class="btn primary">Got it</button></div></div></div>
+
 <main class="app">
 <div class="top">
-<div class="brand"><div><h1>My Money Manager</h1><div class="sub">Income • Expenses • Debtors • Creditors • LKR • v2.2</div></div><button id="install" class="btn hidden">Install App</button></div>
+<div class="brand"><div><h1>My Money Manager</h1><div class="sub">Income • Expenses • Debtors • Creditors • LKR • v2.3 iOS</div></div><button id="install" class="btn hidden">Install App</button></div>
 <div class="tabs"><button class="tab active" data-page="dashboard">Dashboard</button><button class="tab" data-page="cash">Income & Expenses</button><button class="tab" data-page="ledger">Debtors & Creditors</button><button class="tab" data-page="settings">Settings</button></div>
 </div>
 
@@ -190,13 +198,35 @@ $('payForm').onsubmit=e=>{e.preventDefault();let a=state.ledger.find(x=>x.id===s
 $('saveSettings').onclick=async()=>{state.openingBalance=Math.max(0,Number($('opening').value)||0);let p=$('newPin').value.trim();state.pinHash=await hashPin(p);$('newPin').value='';save();$('settingsMsg').textContent=p?'Settings saved. PIN enabled.':'Settings saved. PIN disabled.'};
 $('lockNow').onclick=()=>{if(state.pinHash){$('lock').classList.remove('hidden');$('unlockPin').value=''}else $('settingsMsg').textContent='Set a PIN first.'};
 $('unlock').onclick=async()=>{if(await hashPin($('unlockPin').value)===state.pinHash){$('lock').classList.add('hidden');$('unlockMsg').textContent=''}else $('unlockMsg').textContent='Incorrect PIN.'};
-function dl(name,text,type){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),400)}function q(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+async function dl(name,text,type){
+ const blob=new Blob([text],{type});
+ try{
+   const file=new File([blob],name,{type});
+   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+     await navigator.share({files:[file],title:name});
+     return;
+   }
+ }catch(e){if(e&&e.name==='AbortError')return;}
+ const u=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=u;a.download=name;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(u),1500)
+}function q(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 $('backup').onclick=()=>dl('money-manager-backup.json',JSON.stringify(state,null,2),'application/json');
 $('restore').onchange=e=>{let f=e.target.files?.[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(String(r.result));if(!Array.isArray(x.cash)||!Array.isArray(x.ledger))throw 0;state={openingBalance:Number(x.openingBalance)||0,pinHash:String(x.pinHash||''),cash:x.cash,ledger:x.ledger};save();reconcileLedgerCash();render();alert('Backup restored.')}catch{alert('Invalid backup file.')}e.target.value=''};r.readAsText(f)};
 $('cashCsv').onclick=()=>{let a=[['Date','Type','Category','Description','Method','Amount LKR'].map(q).join(',')];state.cash.forEach(x=>a.push([x.date,x.type,x.category,x.desc,x.method,Number(x.amount).toFixed(2)].map(q).join(',')));dl('cash-transactions.csv',a.join('\n'),'text/csv')};
 $('ledgerCsv').onclick=()=>{let a=[['Type','Name','Contact','Reference','Record Date','Due Date','Original Amount','Paid','Outstanding','Status','Notes'].map(q).join(',')];state.ledger.forEach(x=>a.push([x.type,x.name,x.contact,x.ref,x.date,x.due,Number(x.amount).toFixed(2),paid(x).toFixed(2),out(x).toFixed(2),status(x),x.notes].map(q).join(',')));dl('debtors-creditors.csv',a.join('\n'),'text/csv')};
 $('clearAll').onclick=()=>{if(confirm('Delete ALL app data?')){localStorage.removeItem(KEY);state={openingBalance:0,pinHash:'',cash:[],ledger:[]};render()}};
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.add('hidden')};
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+if(isIOS&&!isStandalone){$('install').textContent='Install on iPhone';$('install').classList.remove('hidden')}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!isStandalone)$('install').classList.remove('hidden')});
+$('install').onclick=async()=>{
+ if(isIOS){$('iosInstall').classList.remove('hidden');return}
+ if(!deferredPrompt)return;
+ deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('install').classList.add('hidden')
+};
+$('closeIosInstall').onclick=()=>$('iosInstall').classList.add('hidden');
+$('iosInstall').onclick=e=>{if(e.target===$('iosInstall'))$('iosInstall').classList.add('hidden')};
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 load();reconcileLedgerCash();render();if(state.pinHash)$('lock').classList.remove('hidden');
 </script>
