@@ -1,6 +1,16 @@
+UPDATE v2.8
+------------
+- Save Transaction saves the entry, clears its completed values, hides saved-record lists, and immediately returns to the Dashboard.
+- When Income & Expenses is opened again from the top tab, bottom navigation, or Quick Add, the clean form automatically focuses the Amount field for the next entry.
+- After creating a Debtor/Creditor record, the clean form remains ready for the next record and automatically focuses Person / Company.
+- Previously entered transaction and debtor/creditor lists stay hidden during entry. They appear only when View Saved Transactions or View Saved Loans / Records is pressed.
+- Unlocking always opens the Dashboard.
+- Existing v2.7 data, multiple-loan-by-person features, and localStorage remain compatible.
+- Service worker cache updated to v2.8.
+
 MY MONEY MANAGER - ANDROID + iPHONE / iPAD INSTALLATION
 
-VERSION v2.4 iOS COMPATIBLE
+VERSION v2.8 iOS COMPATIBLE
 
 UPLOAD
 1) Unzip this folder.
@@ -30,13 +40,25 @@ DATA
 - To move between Android and iPhone: Backup JSON on the old device and Restore JSON on the new device.
 - Offline use works after the app has successfully loaded online at least once.
 
-UPDATE v2.4
-- Added iPhone/iPad PWA metadata.
-- Added Apple touch icon.
-- Added iOS-specific installation guidance.
-- Improved backup/CSV saving on iOS using the Share Sheet when available.
-- Kept all v2.2 Current Balance, Debtor and Creditor accounting behavior unchanged.
-- Service worker cache updated to v2.4.
+
+UPDATE v2.6
+- Unlocking the app now always opens the Dashboard, regardless of which screen was open when it was locked.
+- After saving an Income/Expense entry, the form stays ready for the next entry, clears the completed values, and focuses the Amount field.
+- After creating a Debtor/Creditor record, the form stays ready for the next entry, clears the completed values, and focuses Person / Company.
+- Saved transaction and ledger lists are hidden during data entry so the record just entered is not displayed again automatically.
+- Use “View Saved Transactions” or “View Saved Loans / Records” when you intentionally want to review old entries.
+- Existing v2.5 data and localStorage remain fully compatible.
+- Service worker cache updated to v2.6.
+
+UPDATE v2.5
+- Added “Loans by Person” for Debtors and Creditors.
+- Select one person to see all of their separate loans/records, original totals, paid totals and total outstanding.
+- Added “All Loans” on each ledger record for quick access to that person’s full loan list.
+- Existing names are suggested when creating another debtor/creditor record.
+- Saving an Income/Expense transaction now returns to the Dashboard automatically.
+- Saving a Debtor/Creditor payment now returns to the Dashboard automatically.
+- Existing Current Balance, Debtor, Creditor and localStorage data remain compatible.
+- Service worker cache updated to v2.5.
 
 WHEN UPDATING GITHUB
 Replace all files with this package, especially index.html, manifest.webmanifest, sw.js and apple-touch-icon.png.
